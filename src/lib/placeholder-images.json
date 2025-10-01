@@ -1,3 +1,46 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-background",
+      "description": "A person working out in a modern gym",
+      "imageUrl": "https://images.unsplash.com/photo-1647098697024-42b1999f04e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxmaXRuZXNzJTIwd29ya291dHxlbnwwfHx8fDE3NTkzMTAzMzV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "fitness workout"
+    },
+    {
+      "id": "feature-tracking",
+      "description": "Close-up of a phone screen showing a workout tracking app",
+      "imageUrl": "https://images.unsplash.com/photo-1730818028713-0da02092e8b5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxhcHAlMjBzY3JlZW58ZW58MHx8fHwxNzU5Mjg5NTM4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "app screen"
+    },
+    {
+      "id": "feature-progress",
+      "description": "Charts and graphs on a screen",
+      "imageUrl": "https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxkYXRhJTIwY2hhcnR8ZW58MHx8fHwxNzU5MjYyNjM4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "data chart"
+    },
+    {
+      "id": "feature-recommendations",
+      "description": "A person looking at exercise suggestions",
+      "imageUrl": "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwZXJzb25hbCUyMHRyYWluZXJ8ZW58MHx8fHwxNzU5MjkzNzcxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "personal trainer"
+    },
+    {
+      "id": "feature-social",
+      "description": "People working out together",
+      "imageUrl": "https://images.unsplash.com/photo-1527933053326-89d1746b76b9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxncm91cCUyMGZpdG5lc3N8ZW58MHx8fHwxNzU5Mjc4NDk2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "group fitness"
+    },
+    {
+      "id": "avatar-1",
+      "description": "User avatar 1",
+      "imageUrl": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NTkzMDY0NTd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "avatar-2",
+      "description": "User avatar 2",
+      "imageUrl": "https://images.unsplash.com/photo-1610655507808-a59293f4e332?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc1OTI3NTk3MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman portrait"
+    }
+  ]
 }
