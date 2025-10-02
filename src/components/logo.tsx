@@ -11,7 +11,7 @@ export default function Logo({ className }: LogoProps) {
     <Link href="/" className={cn('flex items-center gap-2', className)}>
       <Dumbbell className="h-6 w-6 text-primary" />
       <span className="text-xl font-bold font-headline text-foreground">
-        FitnessFlow
+        FlowState
       </span>
     </Link>
   );

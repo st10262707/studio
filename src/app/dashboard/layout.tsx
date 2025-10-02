@@ -16,7 +16,7 @@ import SidebarNav from '@/components/dashboard/sidebar-nav';
 import Logo from '@/components/logo';
 
 export const metadata: Metadata = {
-  title: 'FitnessFlow Dashboard',
+  title: 'FlowState Dashboard',
   description: 'Your personal fitness dashboard.',
 };
 

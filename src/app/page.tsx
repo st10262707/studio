@@ -60,7 +60,7 @@ export default function Home() {
               Transform Your Fitness Journey
             </h1>
             <p className="mt-4 max-w-2xl mx-auto text-lg md:text-xl text-gray-300">
-              FitnessFlow helps you track workouts, visualize progress, and get
+              FlowState helps you track workouts, visualize progress, and get
               AI-powered recommendations to achieve your goals faster.
             </p>
             <div className="mt-8 flex justify-center gap-4">
@@ -78,7 +78,7 @@ export default function Home() {
                 Everything You Need to Succeed
               </h2>
               <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
-                FitnessFlow is packed with features to help you stay motivated
+                FlowState is packed with features to help you stay motivated
                 and on track.
               </p>
             </div>
@@ -109,7 +109,7 @@ export default function Home() {
                 Ready to take control of your fitness?
               </h2>
               <p className="mt-4 text-lg text-muted-foreground">
-                Join thousands of users who are already transforming their lives with FitnessFlow.
+                Join thousands of users who are already transforming their lives with FlowState.
               </p>
               <div className="mt-8">
                 <Button size="lg" asChild>
@@ -125,7 +125,7 @@ export default function Home() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 flex justify-between items-center">
           <Logo />
           <p className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} FitnessFlow. All rights reserved.
+            &copy; {new Date().getFullYear()} FlowState. All rights reserved.
           </p>
         </div>
       </footer>
