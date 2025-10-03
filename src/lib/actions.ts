@@ -1,6 +1,6 @@
 'use server';
 
-import { getExerciseSuggestions, GetExerciseSuggestionsInput } from '@/ai/flows/get-exercise-suggestions';
+import { getExerciseSuggestions } from '@/ai/flows/get-exercise-suggestions';
 import { z } from 'zod';
 
 const GetExerciseSuggestionsInputSchema = z.object({
@@ -11,8 +11,22 @@ const GetExerciseSuggestionsInputSchema = z.object({
   timePerWorkout: z.string(),
 });
 
-export async function getSuggestions(input: GetExerciseSuggestionsInput) {
-  const parsedInput = GetExerciseSuggestionsInputSchema.safeParse(input);
+type SuggestionsState = {
+  success: boolean;
+  error?: string;
+  data?: any;
+}
+
+export async function getSuggestions(prevState: SuggestionsState, formData: FormData): Promise<SuggestionsState> {
+    const rawFormData = {
+        fitnessGoal: formData.get('fitnessGoal'),
+        currentWorkoutPlan: formData.get('currentWorkoutPlan'),
+        experienceLevel: formData.get('experienceLevel'),
+        availableEquipment: formData.get('availableEquipment'),
+        timePerWorkout: formData.get('timePerWorkout'),
+    }
+
+  const parsedInput = GetExerciseSuggestionsInputSchema.safeParse(rawFormData);
 
   if (!parsedInput.success) {
     return { success: false, error: 'Invalid input.' };
