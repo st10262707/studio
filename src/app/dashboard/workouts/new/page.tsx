@@ -230,9 +230,7 @@ export default function NewWorkoutPage() {
                 Add Exercise
               </Button>
               <FormMessage>
-                {form.formState.errors.exercises && !form.formState.errors.exercises.root && (
-                    <p>{form.formState.errors.exercises.message}</p>
-                )}
+                {form.formState.errors.exercises && !form.formState.errors.exercises.root && form.formState.errors.exercises.message}
               </FormMessage>
             </div>
           </CardContent>
