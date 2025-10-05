@@ -1,3 +1,5 @@
+'use client';
+
 import type { Metadata } from 'next';
 import {
   SidebarProvider,
@@ -5,8 +7,6 @@ import {
   SidebarHeader,
   SidebarContent,
   SidebarFooter,
-  SidebarInset,
-  SidebarTrigger,
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -15,17 +15,39 @@ import Link from 'next/link';
 import SidebarNav from '@/components/dashboard/sidebar-nav';
 import Logo from '@/components/logo';
 import BottomNav from '@/components/dashboard/bottom-nav';
-
-export const metadata: Metadata = {
-  title: 'FlowState Dashboard',
-  description: 'Your personal fitness dashboard.',
-};
+import { useAuth, useUser } from '@/firebase';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { signOut } from 'firebase/auth';
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { user, loading } = useUser();
+  const auth = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/login');
+    }
+  }, [user, loading, router]);
+
+  const handleSignOut = async () => {
+    await signOut(auth);
+    router.push('/login');
+  };
+  
+  if (loading || !user) {
+    return (
+        <div className="flex min-h-screen items-center justify-center">
+            <p>Loading...</p>
+        </div>
+    )
+  }
+
   return (
     <SidebarProvider>
       <div className="md:grid md:grid-cols-[auto_1fr]">
@@ -40,21 +62,19 @@ export default function DashboardLayout({
             <SidebarFooter>
               <div className="flex items-center gap-2">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src="https://picsum.photos/seed/avatar1/100/100" data-ai-hint="person portrait" />
-                  <AvatarFallback>JD</AvatarFallback>
+                  <AvatarImage src={user.photoURL || "https://picsum.photos/seed/avatar1/100/100"} data-ai-hint="person portrait" />
+                  <AvatarFallback>{user.displayName?.charAt(0) || 'U'}</AvatarFallback>
                 </Avatar>
                 <div className="flex-grow overflow-hidden">
-                  <p className="text-sm font-medium truncate">John Doe</p>
-                  <p className="text-xs text-muted-foreground truncate">john.doe@example.com</p>
+                  <p className="text-sm font-medium truncate">{user.displayName}</p>
+                  <p className="text-xs text-muted-foreground truncate">{user.email}</p>
                 </div>
-                <Button variant="ghost" size="icon" className="shrink-0" asChild>
-                  <Link href="/">
+                <Button variant="ghost" size="icon" className="shrink-0" onClick={handleSignOut}>
                     <LogOut className="h-4 w-4" />
-                  </Link>
                 </Button>
               </div>
             </SidebarFooter>
-          </Sidebar>>
+          </Sidebar>
         </div>
         <main className="flex-1 flex flex-col h-screen">
             <header className="flex h-14 items-center gap-4 border-b bg-background/50 px-6 sticky top-0 z-10 backdrop-blur-sm md:hidden">
