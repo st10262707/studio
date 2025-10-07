@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import {
   Card,
@@ -8,15 +10,29 @@ import {
   CardFooter,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Dumbbell, PlusCircle, Activity, Target } from 'lucide-react';
+import { Dumbbell, PlusCircle, Activity, Target, Loader2 } from 'lucide-react';
+import { useCollection, useFirestore, useUser } from '@/firebase';
+import { useMemo } from 'react';
+import { collection, limit, orderBy, query } from 'firebase/firestore';
+import type { Workout } from '@/types';
 
-const recentWorkouts = [
-  { id: 1, name: 'Full Body Strength', date: 'Yesterday' },
-  { id: 2, name: 'Morning Cardio', date: '3 days ago' },
-  { id: 3, name: 'Leg Day', date: '5 days ago' },
-];
 
 export default function DashboardPage() {
+    const { user } = useUser();
+    const firestore = useFirestore();
+
+    const recentWorkoutsQuery = useMemo(() => {
+        if (!user) return null;
+        return query(
+            collection(firestore, `users/${user.uid}/workouts`),
+            orderBy('date', 'desc'),
+            limit(3)
+        );
+    }, [user, firestore]);
+
+    const { data: recentWorkouts, loading } = useCollection<Workout>(recentWorkoutsQuery);
+
+
   return (
     <div className="grid gap-6">
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -61,22 +77,34 @@ export default function DashboardPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ul className="space-y-4">
-              {recentWorkouts.map((workout) => (
-                <li key={workout.id} className="flex items-center gap-4">
-                  <div className="p-2 bg-secondary rounded-md">
-                    <Dumbbell className="h-5 w-5 text-secondary-foreground" />
-                  </div>
-                  <div className="flex-grow">
-                    <p className="font-medium">{workout.name}</p>
-                    <p className="text-sm text-muted-foreground">{workout.date}</p>
-                  </div>
-                  <Button variant="ghost" size="sm" asChild>
-                    <Link href="/dashboard/workouts">View</Link>
-                  </Button>
-                </li>
-              ))}
-            </ul>
+            {loading ? (
+                 <div className="flex justify-center items-center p-8">
+                    <Loader2 className="h-6 w-6 animate-spin" />
+                </div>
+            ) : recentWorkouts && recentWorkouts.length > 0 ? (
+                <ul className="space-y-4">
+                  {recentWorkouts.map((workout) => (
+                    <li key={workout.id} className="flex items-center gap-4">
+                      <div className="p-2 bg-secondary rounded-md">
+                        <Dumbbell className="h-5 w-5 text-secondary-foreground" />
+                      </div>
+                      <div className="flex-grow">
+                        <p className="font-medium">{workout.name}</p>
+                        <p className="text-sm text-muted-foreground">
+                            {workout.date ? new Date(workout.date.seconds * 1000).toLocaleDateString() : 'No date'}
+                        </p>
+                      </div>
+                      <Button variant="ghost" size="sm" asChild>
+                        <Link href="/dashboard/workouts">View</Link>
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
+            ) : (
+                 <div className="text-center text-muted-foreground p-8">
+                    <p>No recent workouts.</p>
+                </div>
+            )}
           </CardContent>
           <CardFooter>
             <Button variant="outline" className="w-full" asChild>

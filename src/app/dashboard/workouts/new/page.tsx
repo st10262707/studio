@@ -33,6 +33,10 @@ import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
+import { useFirestore, useUser } from '@/firebase';
+import { addDoc, collection } from 'firebase/firestore';
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError } from '@/firebase/errors';
 
 const workoutFormSchema = z.object({
   name: z.string().min(2, {
@@ -56,6 +60,8 @@ type WorkoutFormValues = z.infer<typeof workoutFormSchema>;
 export default function NewWorkoutPage() {
   const { toast } = useToast();
   const router = useRouter();
+  const firestore = useFirestore();
+  const { user } = useUser();
 
   const form = useForm<WorkoutFormValues>({
     resolver: zodResolver(workoutFormSchema),
@@ -71,13 +77,43 @@ export default function NewWorkoutPage() {
     name: 'exercises',
   });
 
-  function onSubmit(data: WorkoutFormValues) {
-    console.log(data);
-    toast({
-      title: 'Workout Logged!',
-      description: `Your workout "${data.name}" has been saved.`,
-    });
-    router.push('/dashboard/workouts');
+  async function onSubmit(data: WorkoutFormValues) {
+    if (!user) {
+        toast({
+            variant: 'destructive',
+            title: 'Error',
+            description: 'You must be logged in to save a workout.'
+        });
+        return;
+    }
+    try {
+        const workoutData = {
+            ...data,
+            duration: 0, // This can be calculated or manually entered later
+        };
+        const workoutCollectionRef = collection(firestore, 'users', user.uid, 'workouts');
+        addDoc(workoutCollectionRef, workoutData).catch(serverError => {
+            const permissionError = new FirestorePermissionError({
+                path: workoutCollectionRef.path,
+                operation: 'create',
+                requestResourceData: workoutData,
+            });
+            errorEmitter.emit('permission-error', permissionError);
+        })
+
+        toast({
+        title: 'Workout Logged!',
+        description: `Your workout "${data.name}" has been saved.`,
+        });
+        router.push('/dashboard/workouts');
+
+    } catch (error: any) {
+        toast({
+            variant: 'destructive',
+            title: 'Uh oh! Something went wrong.',
+            description: error.message || 'Could not save workout.'
+        });
+    }
   }
 
   return (
@@ -230,7 +266,7 @@ export default function NewWorkoutPage() {
                 Add Exercise
               </Button>
               <FormMessage>
-                {form.formState.errors.exercises && !form.formState.errors.exercises.root && form.formState.errors.exercises.message}
+                {form.formState.errors.exercises?.message}
               </FormMessage>
             </div>
           </CardContent>

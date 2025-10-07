@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import {
   Card,
@@ -16,7 +18,7 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MoreHorizontal } from 'lucide-react';
+import { MoreHorizontal, Loader2 } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,48 +27,21 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import type { Workout } from '@/types';
-
-const workouts: Workout[] = [
-  {
-    id: '1',
-    name: 'Full Body Strength',
-    date: new Date('2024-07-20'),
-    duration: 60,
-    exercises: [
-      { id: 'e1', name: 'Squats', sets: 3, reps: 10, weight: 100 },
-      { id: 'e2', name: 'Bench Press', sets: 3, reps: 8, weight: 80 },
-    ],
-  },
-  {
-    id: '2',
-    name: 'Morning Cardio',
-    date: new Date('2024-07-18'),
-    duration: 30,
-    exercises: [{ id: 'e3', name: 'Running', sets: 1, reps: 1, weight: 0 }],
-  },
-  {
-    id: '3',
-    name: 'Leg Day Annihilation',
-    date: new Date('2024-07-16'),
-    duration: 75,
-    exercises: [
-        { id: 'e1', name: 'Squats', sets: 5, reps: 5, weight: 120 },
-        { id: 'e4', name: 'Deadlifts', sets: 3, reps: 5, weight: 150 },
-    ],
-  },
-    {
-    id: '4',
-    name: 'Upper Body Pump',
-    date: new Date('2024-07-15'),
-    duration: 55,
-    exercises: [
-        { id: 'e2', name: 'Bench Press', sets: 4, reps: 6, weight: 85 },
-        { id: 'e5', name: 'Pull Ups', sets: 4, reps: 8, weight: 0 },
-    ],
-  },
-];
+import { useCollection, useFirestore, useUser } from '@/firebase';
+import { collection, query, orderBy } from 'firebase/firestore';
+import { useMemo } from 'react';
 
 export default function WorkoutsPage() {
+    const { user } = useUser();
+    const firestore = useFirestore();
+
+    const workoutsQuery = useMemo(() => {
+        if (!user) return null;
+        return query(collection(firestore, 'users', user.uid, 'workouts'), orderBy('date', 'desc'));
+    }, [user, firestore]);
+
+    const { data: workouts, loading } = useCollection<Workout>(workoutsQuery);
+
   return (
     <Card>
       <CardHeader>
@@ -89,15 +64,24 @@ export default function WorkoutsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {workouts.map((workout) => (
+            {loading ? (
+                <TableRow>
+                    <TableCell colSpan={5} className="text-center">
+                        <div className="flex justify-center items-center p-8">
+                            <Loader2 className="h-6 w-6 animate-spin" />
+                        </div>
+                    </TableCell>
+                </TableRow>
+            ) : workouts && workouts.length > 0 ? (
+                workouts.map((workout) => (
               <TableRow key={workout.id}>
                 <TableCell className="font-medium">{workout.name}</TableCell>
                 <TableCell>
                   <Badge variant="outline">{workout.exercises.length} exercises</Badge>
                 </TableCell>
-                <TableCell className="hidden md:table-cell">{workout.duration} min</TableCell>
+                <TableCell className="hidden md:table-cell">{workout.duration || 'N/A'} min</TableCell>
                 <TableCell className="hidden md:table-cell">
-                  {workout.date.toLocaleDateString()}
+                  {workout.date ? new Date(workout.date.seconds * 1000).toLocaleDateString() : 'No date'}
                 </TableCell>
                 <TableCell>
                   <DropdownMenu>
@@ -118,7 +102,19 @@ export default function WorkoutsPage() {
                   </DropdownMenu>
                 </TableCell>
               </TableRow>
-            ))}
+            ))
+        ) : (
+            <TableRow>
+                <TableCell colSpan={5} className="text-center">
+                    <div className="p-8">
+                        <p className="mb-2">No workouts found.</p>
+                        <Button asChild>
+                            <Link href="/dashboard/workouts/new">Log your first workout</Link>
+                        </Button>
+                    </div>
+                </TableCell>
+            </TableRow>
+        )}
           </TableBody>
         </Table>
       </CardContent>

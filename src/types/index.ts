@@ -1,5 +1,5 @@
 export type Exercise = {
-  id: string;
+  id?: string;
   name: string;
   sets: number;
   reps: number;
@@ -9,7 +9,7 @@ export type Exercise = {
 export type Workout = {
   id: string;
   name: string;
-  date: Date;
+  date: any; // Using any for Firestore Timestamp compatibility
   duration: number; // in minutes
   exercises: Exercise[];
 };
