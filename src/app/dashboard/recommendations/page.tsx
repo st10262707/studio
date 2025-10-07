@@ -32,10 +32,11 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Bot, Check, Dumbbell, Loader2 } from 'lucide-react';
+import { Bot, Check, Dumbbell, Loader2, Youtube } from 'lucide-react';
 import { getSuggestions } from '@/lib/actions';
 import { GetExerciseSuggestionsOutput } from '@/ai/flows/get-exercise-suggestions';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import Link from 'next/link';
 
 const recommendationsFormSchema = z.object({
   fitnessGoal: z.string().min(1, 'Please select a fitness goal.'),
@@ -251,9 +252,19 @@ export default function RecommendationsPage() {
                 <h3 className="font-semibold mb-2">Suggested Exercises:</h3>
                 <ul className="space-y-2">
                   {state.data.suggestedExercises.map((exercise, index) => (
-                    <li key={index} className="flex items-center gap-2">
-                      <Dumbbell className="h-4 w-4 text-primary" />
-                      <span>{exercise}</span>
+                    <li key={index} className="flex items-center justify-between gap-2">
+                        <div className='flex items-center gap-2'>
+                            <Dumbbell className="h-4 w-4 text-primary" />
+                            <span>{exercise}</span>
+                        </div>
+                        <Link
+                            href={`https://www.youtube.com/results?search_query=${encodeURIComponent(exercise)}+exercise+demonstration`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-muted-foreground hover:text-primary"
+                        >
+                            <Youtube className="h-5 w-5" />
+                        </Link>
                     </li>
                   ))}
                 </ul>
