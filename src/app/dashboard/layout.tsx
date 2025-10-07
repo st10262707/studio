@@ -19,6 +19,7 @@ import { useAuth, useUser } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { signOut } from 'firebase/auth';
+import MusicPlayer from '@/components/dashboard/music-player';
 
 export default function DashboardLayout({
   children,
@@ -36,6 +37,7 @@ export default function DashboardLayout({
   }, [user, loading, router]);
 
   const handleSignOut = async () => {
+    if (!auth) return;
     await signOut(auth);
     router.push('/login');
   };
@@ -85,8 +87,11 @@ export default function DashboardLayout({
                     <Link href="/dashboard/workouts/new">Log Workout</Link>
                 </Button>
             </header>
-          <div className="flex-1 overflow-y-auto p-4 md:p-6 pb-20 md:pb-6">
+          <div className="flex-1 overflow-y-auto p-4 md:p-6 pb-40 md:pb-6">
             {children}
+          </div>
+          <div className="fixed bottom-0 left-0 right-0 z-20 border-t bg-background/95 backdrop-blur-sm md:relative md:z-auto md:border-0 md:bg-transparent md:backdrop-blur-none md:p-6 md:pt-0">
+             <MusicPlayer />
           </div>
           <BottomNav />
         </main>

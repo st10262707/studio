@@ -22,7 +22,7 @@ export default function DashboardPage() {
     const firestore = useFirestore();
 
     const recentWorkoutsQuery = useMemo(() => {
-        if (!user) return null;
+        if (!user || !firestore) return null;
         return query(
             collection(firestore, `users/${user.uid}/workouts`),
             orderBy('date', 'desc'),
